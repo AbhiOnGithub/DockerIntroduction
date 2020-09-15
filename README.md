@@ -100,10 +100,11 @@ CONTAINER ID   IMAGE       COMMAND       CREATED              STATUS            
 
 6. Create our own Docker image using Google's GoLang Programming Language,run the following command inside the folder where dockerfile exists.
 
+Directory structure
 ``` cmd
 -HelloGoLang   (Directory)
-    dockerfile (Dockerfile)
-    main.go    (GoLang program file)
+    -dockerfile (Dockerfile) 
+    -main.go    (GoLang program file)
 ```
 
 ``` cmd/docker
@@ -153,4 +154,3 @@ docker run hello
 
 hello world
 ```
-
