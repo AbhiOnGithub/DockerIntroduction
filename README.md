@@ -148,7 +148,7 @@ hello-world            latest            bf756fb1ae65        8 months ago       
 hello                  latest            602d87c8e6d2        5 minutes ago       302MB
 ```
 
-1. Run the container using hello image just created by you
+8. Run the container using hello image just created by you
 
 ``` cmd/docker
 docker run hello
