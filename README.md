@@ -107,6 +107,40 @@ Directory structure
     -main.go    (GoLang program file)
 ```
 
+Content of main.go
+
+``` golang
+package main
+
+import "fmt"
+
+func main() {
+	fmt.Println("hello world")
+}
+```
+
+Content of Dockerfile
+``` cmd/docker
+FROM golang:1.15-alpine
+
+## create an /app directory within our image that will hold our source files
+RUN mkdir /app
+
+## copy everything in the root directory into our /app directory
+ADD . /app
+
+## specify that we now wish to execute any further commands inside our /app directory
+WORKDIR /app
+
+## run go build to compile the binary executable of our Go program
+RUN go build -o main .
+
+## command which starts our newly created binary executable
+CMD ["/app/main"]
+```
+
+Now build the image
+
 ``` cmd/docker
 docker image build -t hello .
 
