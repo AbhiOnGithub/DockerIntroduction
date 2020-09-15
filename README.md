@@ -141,7 +141,7 @@ CMD ["/app/main"]
 
 Now to build the image,run the following command inside the folder where dockerfile exists.
 
-``` cmd/docker
+``` dockerfile
 docker image build -t hello .
 
 Sending build context to Docker daemon  3.584kB
@@ -170,7 +170,7 @@ Successfully tagged hello:latest
 SECURITY WARNING: You are building a Docker image from Windows against a non-Windows Docker host. All files and directories added to build context will have '-rwxr-xr-x' permissions. It is recommended to double check and reset permissions for sensitive files and directories.
 ```
 
-7. Again get list of Docker images present on your machine, you must see newly created hello image
+1. Again get list of Docker images present on your machine, you must see newly created hello image
 
 ```cmd/docker
 docker images
