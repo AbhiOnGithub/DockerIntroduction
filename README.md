@@ -136,8 +136,8 @@ Successfully tagged hello:latest
 SECURITY WARNING: You are building a Docker image from Windows against a non-Windows Docker host. All files and directories added to build context will have '-rwxr-xr-x' permissions. It is recommended to double check and reset permissions for sensitive files and directories.
 ```
 
-1. Again get list of Docker images present on your machine, you must see newly created hello image
-   
+7. Again get list of Docker images present on your machine, you must see newly created hello image
+
 ```cmd/docker
 docker images
 ```
@@ -148,7 +148,8 @@ hello-world            latest            bf756fb1ae65        8 months ago       
 hello                  latest            602d87c8e6d2        5 minutes ago       302MB
 ```
 
-8. Run the container using hello image just created by you
+1. Run the container using hello image just created by you
+
 ``` cmd/docker
 docker run hello
 
