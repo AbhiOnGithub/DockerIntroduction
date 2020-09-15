@@ -120,7 +120,7 @@ func main() {
 ```
 
 Content of Dockerfile
-``` cmd/docker
+``` dockerfile
 FROM golang:1.15-alpine
 
 ## create an /app directory within our image that will hold our source files
@@ -141,7 +141,7 @@ CMD ["/app/main"]
 
 Now to build the image,run the following command inside the folder where dockerfile exists.
 
-``` dockerfile
+``` cmd/docker
 docker image build -t hello .
 
 Sending build context to Docker daemon  3.584kB
