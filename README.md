@@ -201,7 +201,7 @@ hello world
 
 Refer the folder **GoLangWebApp** in this exercise
 
-``` text
+``` cmd
 GoPrograms
       |---GoLangWebApp (we will be using this folder now in #9)
          |---dockerfile
@@ -212,9 +212,10 @@ GoPrograms
          |---dockerfile
          |---main.go
 ```
+
 here is our main.go GoLang file that we will be usign to create our web app
 
-``` go-lang
+``` go
 package main
 
 import (
