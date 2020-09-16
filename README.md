@@ -6,8 +6,8 @@ All containers are run by a single operating system kernel and therefore use few
 
 ## Softwares to Download
 
-Docker Desktop for Windows or Mac from <https://www.docker.com>
-WSL2 in case of Windows only
+Docker Desktop for Windows or Mac from <https://www.docker.com> <br/>
+Also enable WSL2 in case of Windows 10 only
 
 ## Lets start with running few commands
 
@@ -341,5 +341,5 @@ Now Open the http://localhost you will see following output
 Next update the URL to http://localhost/hello you will see following output
 <img src="images/2-localhost-hello.PNG" />
 
-finally update the URL to  http://localhost/hello/Abhishek {paas your name in place of Abhishek}
+finally update the URL to  http://localhost/hello/Abhishek {pass your name in place of Abhishek}
 <img src="images/3-localhost-hello-abhishek.PNG" />
