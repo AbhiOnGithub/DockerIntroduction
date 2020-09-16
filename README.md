@@ -320,15 +320,15 @@ services:
       - "nginx-proxy"
 ```
 
-*10*) Just run folowing two commands to trigger our web app deployment and nginx deployment.
+*10*) Just run following two commands to trigger our web app deployment and nginx deployment.
 
-Deploy our web app
+#1 Deploy our web app
 
 ``` cmd/docker
 docker-compose -f go-app-compose.yaml up -d
 ```
 
-Deploy Nginx
+#2 Deploy Nginx
 
 ``` cmd/docker
 docker-compose -f nginx-proxy-compose.yaml up -d
