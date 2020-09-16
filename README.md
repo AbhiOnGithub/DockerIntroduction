@@ -20,7 +20,7 @@ Also enable WSL2 in case of Windows 10 only
 docker –-version
 ```
 
-In my machine I got following output
+On my machine I got following output
 
 ``` text
 Docker version 19.03.12, build 48a66213fe
@@ -31,6 +31,8 @@ Docker version 19.03.12, build 48a66213fe
 ``` cmd/docker
 docker run hello-world
 ```
+
+here docker will pull hello-world image from docker-hub if it is not available on your system
 
 You will see something like this:
 ``` text
@@ -61,6 +63,7 @@ Share images, automate workflows, and more with a free Docker ID:
 For more examples and ideas, visit:
  https://docs.docker.com/get-started/
 ```
+
 
 *3*) Get list of Docker images present on your machine.
 
