@@ -11,7 +11,7 @@ WSL2 in case of Windows only
 
 ## Lets start with running few commands
 
-1. Find out the version of Docker in your Machine.
+*1*) Find out the version of Docker in your Machine.
 
 ``` cmd/docker
 docker –-version
@@ -23,7 +23,7 @@ In my machine I got following output
 Docker version 19.03.12, build 48a66213fe
 ```
 
-2. Running a "Helllo-World" container on Docker
+*2*) Running a "Helllo-World" container on Docker
 
 ``` cmd/docker
 docker run hello-world
@@ -59,8 +59,8 @@ For more examples and ideas, visit:
  https://docs.docker.com/get-started/
 ```
 
-3. Get list of Docker images present on your machine.
-   
+*3*) Get list of Docker images present on your machine.
+
 ```cmd/docker
 docker images
 ```
@@ -69,7 +69,7 @@ You should get following listing of Docker images or even with more images avail
 REPOSITORY              TAG               IMAGE ID            CREATED             SIZE
 hello-world            latest            bf756fb1ae65        8 months ago        13.3kB
 ```
-4. Running a container 
+*4*) Running a container 
 Running of containers is managed with the Docker run command. To run a container in an interactive mode, first launch the Docker container.
 ``` cmd/docker
 PS C:\Code> docker run -it centos /bin/bash
@@ -88,7 +88,7 @@ exit
 PS C:\Code>
 ```
 
-5. Getting kist of all containers
+*5*) Getting kist of all containers
 here -a tells the docker ps command to list all of the containers on the system.
 
 ``` cmd/docker
@@ -98,13 +98,19 @@ CONTAINER ID   IMAGE       COMMAND       CREATED              STATUS            
 4946e4d5d0e7   hello-world "/hello"      4 minutes ago        Exited (0) 4 minutes    cool_wing
 ```
 
-6. Create our own Docker image using Google's GoLang Programming Language.
+*6*) Create our own Docker image using Google's GoLang Programming Language.
 
 Directory structure
 ``` cmd
--HelloGoLang   (Directory)
-    -dockerfile (Dockerfile) 
-    -main.go    (GoLang program file)
+GoPrograms
+      |---GoLangWebApp (we will be using this folder later in #9)
+         |---dockerfile
+         |---go-app-compose.yaml
+         |---main.go
+         |---nginx-proxy-compose.yaml
+      |---HelloGoLang (we will be using this folder now in #6)
+         |---dockerfile
+         |---main.go
 ```
 
 Content of main.go
@@ -170,11 +176,12 @@ Successfully tagged hello:latest
 SECURITY WARNING: You are building a Docker image from Windows against a non-Windows Docker host. All files and directories added to build context will have '-rwxr-xr-x' permissions. It is recommended to double check and reset permissions for sensitive files and directories.
 ```
 
-7. Again get list of Docker images present on your machine, you must see newly created hello image
+*7*) Again get list of Docker images present on your machine, you must see newly created hello image
 
 ```cmd/docker
 docker images
 ```
+
 You should get following listing of Docker images or even with more images available
 ``` cmd/docker
 REPOSITORY              TAG               IMAGE ID            CREATED             SIZE
@@ -182,10 +189,156 @@ hello-world            latest            bf756fb1ae65        8 months ago       
 hello                  latest            602d87c8e6d2        5 minutes ago       302MB
 ```
 
-8. Run the container using hello image just created by you
+*8*) Run the container using hello image just created by you
 
 ``` cmd/docker
 docker run hello
 
 hello world
 ```
+
+*9*) Now we will create and host a very simple web application using GoLang and nginx, we will also see how to do deployments using .yaml files
+
+Refer the folder **GoLangWebApp** in this exercise
+
+``` text
+GoPrograms
+      |---GoLangWebApp (we will be using this folder now in #9)
+         |---dockerfile
+         |---go-app-compose.yaml
+         |---main.go
+         |---nginx-proxy-compose.yaml
+      |---HelloGoLang (we used this folder in #6)
+         |---dockerfile
+         |---main.go
+```
+here is our main.go GoLang file that we will be usign to create our web app
+
+``` go-lang
+package main
+
+import (
+	"fmt"
+	"net/http"
+
+	"github.com/gorilla/mux"
+)
+
+func main() {
+	r := mux.NewRouter()
+
+	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, "<h1>This is the homepage. Try /hello and /hello/Abhishek\n</h1>")
+	})
+
+	r.HandleFunc("/hello", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, "<h1>Hello from Docker!\n</h1>")
+	})
+
+	r.HandleFunc("/hello/{name}", func(w http.ResponseWriter, r *http.Request) {
+		vars := mux.Vars(r)
+		title := vars["name"]
+
+		fmt.Fprintf(w, "<h1>Hello from %s!\n</h1>", title)
+	})
+
+	http.ListenAndServe(":80", r)
+}
+```
+
+Here is our **dockerfile** that we will be using to create image of our web app
+
+``` dockerfile
+FROM golang:alpine AS build
+
+RUN apk --no-cache add gcc g++ make git
+
+WORKDIR /go/src/app
+
+COPY . .
+
+RUN go get ./...
+
+RUN GOOS=linux go build -ldflags="-s -w" -o ./bin/web-app ./main.go
+
+FROM alpine:3.9
+
+RUN apk --no-cache add ca-certificates
+
+WORKDIR /usr/bin
+
+COPY --from=build /go/src/app/bin /go/bin
+
+EXPOSE 80
+
+ENTRYPOINT /go/bin/web-app --port 80
+```
+
+We will be storing the Docker Compose configuration for our Go web app in a file named **go-app-compose.yaml**
+Lets create **go-app-compose.yaml** file to trigger web app deployment
+
+```yaml
+version: '3'
+services:
+  go-web-app:
+    restart: always
+    build:
+      dockerfile: Dockerfile
+      context: .
+    environment:
+      - VIRTUAL_HOST=localhost
+      - LETSENCRYPT_HOST=localhost
+```
+
+It is important that we secure our app with HTTPS. To accomplish this, we will deploy **nginx-proxy** via Docker Compose, along with its let’s Encrypt add-on.  <br/>
+This secures Docker containers proxied using nginx-proxy, and takes care of securing our app through HTTPS by automatically handling TLS certificate creation and renewal.
+
+We will be storing the Docker Compose configuration for nginx-proxy in a file named **nginx-proxy-compose.yaml** as shown below
+
+``` yaml
+version: '2'
+
+services:
+  nginx-proxy:
+    restart: always
+    image: jwilder/nginx-proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - "/etc/nginx/vhost.d"
+      - "/usr/share/nginx/html"
+      - "/var/run/docker.sock:/tmp/docker.sock:ro"
+      - "/etc/nginx/certs"
+
+  letsencrypt-nginx-proxy-companion:
+    restart: always
+    image: jrcs/letsencrypt-nginx-proxy-companion
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    volumes_from:
+      - "nginx-proxy"
+```
+
+*10*) Just run folowing two commands to trigger our web app deployment and nginx deployment.
+
+Deploy our web app
+
+``` cmd/docker
+docker-compose -f go-app-compose.yaml up -d
+```
+
+Deploy Nginx
+
+``` cmd/docker
+docker-compose -f nginx-proxy-compose.yaml up -d
+```
+
+Now Open the http://localhost you will see following output
+<img src="images/1-localhost.PNG" />
+
+Next update the URL to http://localhost/hello you will see following output
+<img src="images/2-localhost-hello.PNG" />
+
+finally update the URL to  http://localhost/hello/Abhishek {paas your name in place of Abhishek}
+<img src="images/3-localhost-hello-abhishek.PNG" />
